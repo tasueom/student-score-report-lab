@@ -68,3 +68,28 @@ def create_table():
             cursor.close()
         if conn:
             conn.close()
+
+def insert_score(name, kor, eng, math, total, average, grade):
+    """성적을 삽입하고 성공 여부를 반환합니다."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(f"""
+                        INSERT INTO scores (name, kor, eng, math, total, average, grade)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (name, kor, eng, math, total, average, grade))
+        conn.commit()
+        return True
+    except mysql.connector.Error as err:
+        print(f"Score insertion failed: {err}")
+        if conn:
+            conn.rollback()
+        return False
+    finally:
+        # 리소스 정리: 예외 발생 여부와 관계없이 항상 실행
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()

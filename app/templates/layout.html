@@ -6,12 +6,20 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    {% set messages = get_flashed_messages() %}
+    {% if messages %}
+    <script>
+        alert("{{ messages[0] }}");
+    </script>
+    {% endif %}
+    
     <header>
         <h1>성적표 저장 프로그램</h1>
     </header>
     <nav>
         <ul>
             <li><a href="{{ url_for('index') }}">홈</a></li>
+            <li><a href="{{ url_for('input') }}">성적 입력</a></li>
         </ul>
     </nav>
     {% block content %}{% endblock %}
