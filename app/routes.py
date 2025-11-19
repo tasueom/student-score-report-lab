@@ -19,3 +19,8 @@ def input():
             flash('성적 저장에 실패했습니다.')
         return redirect(url_for('index'))
     return render_template('input.html')
+
+@app.route('/view')
+def view():
+    scores = db.get_scores()
+    return render_template('view.html', scores=scores)

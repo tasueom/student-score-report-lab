@@ -93,3 +93,21 @@ def insert_score(name, kor, eng, math, total, average, grade):
             cursor.close()
         if conn:
             conn.close()
+
+def get_scores():
+    """성적을 조회하고 리스트를 반환합니다."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM scores")
+        return cursor.fetchall()
+    except mysql.connector.Error as err:
+        print(f"Score retrieval failed: {err}")
+        return []  # 빈 리스트 반환
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()

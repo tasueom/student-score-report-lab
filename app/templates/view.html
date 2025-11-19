@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}성적 조회{% endblock %}
+{% block content %}
+<main>
+    <h2>성적 조회</h2>
+</main>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>이름</th>
+                <th>국어</th>
+                <th>영어</th>
+                <th>수학</th>
+                <th>총점</th>
+                <th>평균</th>
+                <th>등급</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for score in scores %}
+            <tr>
+                <td>{{ score[0] }}</td>
+                <td>{{ score[1] }}</td>
+                <td>{{ score[2] }}</td>
+                <td>{{ score[3] }}</td>
+                <td>{{ score[4] }}</td>
+                <td>{{ score[5] }}</td>
+                <td>{{ score[6] }}</td>
+                <td>{{ score[7] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
