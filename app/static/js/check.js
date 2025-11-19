@@ -3,13 +3,34 @@ function validateForm() {
     const kor = document.getElementById('kor').value;
     const eng = document.getElementById('eng').value;
     const math = document.getElementById('math').value;
-    if (name === '' || isNaN(kor) || isNaN(eng) || isNaN(math)) {
+    
+    // 이름 검증
+    if (name === '') {
+        alert('이름을 입력해주세요.');
+        return false;
+    }
+    
+    // 점수가 정수인지 확인
+    const korNum = Number(kor);
+    const engNum = Number(eng);
+    const mathNum = Number(math);
+    
+    if (isNaN(korNum) || isNaN(engNum) || isNaN(mathNum)) {
         alert('모든 필드를 유효한 숫자로 입력해주세요.');
         return false;
     }
-    if (kor < 0 || kor > 100 || eng < 0 || eng > 100 || math < 0 || math > 100) {
-        alert('국어, 영어, 수학 점수는 0에서 100 사이의 숫자여야 합니다.');
+    
+    // 정수인지 확인 (소수점 거부)
+    if (!Number.isInteger(korNum) || !Number.isInteger(engNum) || !Number.isInteger(mathNum)) {
+        alert('점수는 정수만 입력 가능합니다.');
         return false;
     }
+    
+    // 범위 검증
+    if (korNum < 0 || korNum > 100 || engNum < 0 || engNum > 100 || mathNum < 0 || mathNum > 100) {
+        alert('국어, 영어, 수학 점수는 0에서 100 사이의 정수여야 합니다.');
+        return false;
+    }
+    
     return true;
 }
