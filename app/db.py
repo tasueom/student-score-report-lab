@@ -13,7 +13,7 @@ base_config = {
 
 DB_NAME = os.environ.get('DB_NAME', 'scoredb')
 
-table_name = "scores"
+TABLE_NAME = "scores"
 
 def get_conn():
     """커넥션과 커서 반환하는 함수"""
@@ -49,7 +49,7 @@ def create_table():
         conn = get_conn()
         cursor = conn.cursor()
         cursor.execute(f"""
-                        CREATE TABLE scores (
+                        CREATE TABLE {TABLE_NAME} (
                             id INT AUTO_INCREMENT PRIMARY KEY,
                             name VARCHAR(50),
                             kor INT,
@@ -82,7 +82,7 @@ def insert_score(name, kor, eng, math, total, average, grade):
         conn = get_conn()
         cursor = conn.cursor()
         cursor.execute(f"""
-                        INSERT INTO scores (name, kor, eng, math, total, average, grade)
+                        INSERT INTO {TABLE_NAME} (name, kor, eng, math, total, average, grade)
                         VALUES (%s, %s, %s, %s, %s, %s, %s)
                     """, (name, kor, eng, math, total, average, grade))
         conn.commit()
@@ -106,7 +106,7 @@ def get_scores():
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM scores")
+        cursor.execute(f"SELECT * FROM {TABLE_NAME}")
         return cursor.fetchall()
     except mysql.connector.Error as err:
         print(f"Score retrieval failed: {err}")
