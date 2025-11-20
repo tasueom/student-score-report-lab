@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash as gen_pw, check_password_hash as chk_pw
+import pandas as pd
 from app import app, service, db
 import os
 
@@ -122,6 +123,60 @@ def export_pdf():
         return redirect(url_for('index'))
     flash("준비중입니다.")
     return redirect(url_for('view'))
+
+@app.route('/upload_csv', methods=['POST'])
+def upload_csv():
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
+    file = request.files['file']
+    df = pd.read_csv(file, dtype={'id': str})
+    success_count = 0
+    for _, row in df.iterrows():
+        id = str(row['id']).strip()
+        kor = int(row['kor'])
+        eng = int(row['eng'])
+        math = int(row['math'])
+        total, average, grade = service.calculate(kor, eng, math)
+        result = db.insert_score(id, kor, eng, math, total, average, grade)
+        if result == True:
+            success_count += 1
+        elif result == 'duplicate':
+            flash(f'({id}) 성적 저장에 실패했습니다. 이미 성적이 입력된 학번입니다.')
+        elif result == 'foreign_key':
+            flash(f'({id}) 성적 저장에 실패했습니다. 가입된 학번이 아닙니다.')
+        else:
+            flash(f'({id}) 성적 저장에 실패했습니다.')
+    if success_count > 0:
+        flash(f'{success_count}명의 성적이 성공적으로 업로드되었습니다.')
+    return redirect(url_for('input'))
+
+@app.route('/upload_json', methods=['POST'])
+def upload_json():
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
+    file = request.files['file']
+    df = pd.read_json(file)
+    success_count = 0
+    for _, row in df.iterrows():
+        id = str(row['id']).strip()
+        kor = int(row['kor'])
+        eng = int(row['eng'])
+        math = int(row['math'])
+        total, average, grade = service.calculate(kor, eng, math)
+        result = db.insert_score(id, kor, eng, math, total, average, grade)
+        if result == True:
+            success_count += 1
+        elif result == 'duplicate':
+            flash(f'({id}) 성적 저장에 실패했습니다. 이미 성적이 입력된 학번입니다.')
+        elif result == 'foreign_key':
+            flash(f'({id}) 성적 저장에 실패했습니다. 가입된 학번이 아닙니다.')
+        else:
+            flash(f'({id}) 성적 저장에 실패했습니다.')
+    if success_count > 0:
+        flash(f'{success_count}명의 성적이 성공적으로 업로드되었습니다.')
+    return redirect(url_for('input'))
 
 @app.route('/my_score')
 def my_score():

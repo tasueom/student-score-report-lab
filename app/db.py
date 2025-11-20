@@ -211,6 +211,24 @@ def get_student(id):
         if conn:
             conn.close()
 
+def check_score_exists(id):
+    """성적이 존재하는지 확인합니다."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE id = %s", (id,))
+        return cursor.fetchone() is not None
+    except mysql.connector.Error as err:
+        print(f"Score existence check failed: {err}")
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 def insert_test_students():
     """테스트용 학생 10명을 삽입하고 성공 여부를 반환합니다."""
     test_students = [
@@ -262,7 +280,13 @@ def get_no_score_students():
             conn.close()
 
 def insert_score(id, kor, eng, math, total, average, grade):
-    """성적을 삽입하고 성공 여부를 반환합니다."""
+    """성적을 삽입하고 성공 여부를 반환합니다.
+    Returns:
+        True: 성공
+        'duplicate': 이미 성적이 존재함
+        'foreign_key': 학생이 존재하지 않음 (외래키 제약 위반)
+        False: 기타 오류
+    """
     conn = None
     cursor = None
     try:
@@ -275,9 +299,23 @@ def insert_score(id, kor, eng, math, total, average, grade):
         conn.commit()
         return True
     except mysql.connector.Error as err:
-        print(f"Score insertion failed: {err}")
+        print(f"Score insertion failed: {err}, errno: {err.errno}, msg: {err.msg}")
         if conn:
             conn.rollback()
+        # 에러 코드 및 메시지 확인
+        error_code = err.errno
+        error_msg = str(err.msg).lower()
+        
+        # 먼저 중복 키 확인 (이미 성적이 존재하는 경우) - 1062는 Duplicate entry
+        if error_code == 1062:
+            return 'duplicate'
+        # 외래키 제약 위반 확인 (학생이 존재하지 않는 경우) - 1452는 Foreign key constraint fails
+        elif error_code == 1452:
+            # 하지만 실제로는 성적이 이미 존재할 수도 있으므로 다시 확인
+            if check_score_exists(id):
+                return 'duplicate'
+            else:
+                return 'foreign_key'
         return False
     finally:
         # 리소스 정리: 예외 발생 여부와 관계없이 항상 실행

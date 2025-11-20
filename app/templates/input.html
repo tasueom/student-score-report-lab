@@ -3,8 +3,40 @@
 {% block content %}
 <main>
     <h2>성적 입력</h2>
+    <div class="download-buttons">
+        <button type="button" class="btn-download btn-csv" onclick="toggleUpload('csv')" title="CSV 업로드">
+            <i class="fas fa-file-alt"></i>
+        </button>
+        <button type="button" class="btn-download btn-json" onclick="toggleUpload('json')" title="JSON 업로드">
+            <i class="fas fa-code"></i>
+        </button>
+    </div>
 </main>
 <div>
+    <!-- CSV 업로드 폼 -->
+    <form id="csv-upload-form" class="upload-form" method="post" action="{{ url_for('upload_csv') }}" enctype="multipart/form-data">
+        <div>
+            <label for="csv-file">CSV 파일로 업로드</label>
+            <input type="file" id="csv-file" name="file" accept=".csv" required>
+        </div>
+        <div>
+            <button type="submit">업로드</button>
+            <button type="button" class="btn-cancel" onclick="toggleUpload('csv')">취소</button>
+        </div>
+    </form>
+
+    <!-- JSON 업로드 폼 -->
+    <form id="json-upload-form" class="upload-form" method="post" action="{{ url_for('upload_json') }}" enctype="multipart/form-data">
+        <div>
+            <label for="json-file">JSON 파일로 업로드</label>
+            <input type="file" id="json-file" name="file" accept=".json" required>
+        </div>
+        <div>
+            <button type="submit">업로드</button>
+            <button type="button" class="btn-cancel" onclick="toggleUpload('json')">취소</button>
+        </div>
+    </form>
+
     {% if no_score_students %}
     <form method="post" action="{{ url_for('input') }}" onsubmit="return validateForm()">
         <div>
@@ -36,4 +68,26 @@
     <p>성적을 입력할 학생이 없습니다.</p>
     {% endif %}
 </div>
+<script>
+function toggleUpload(type) {
+    const csvForm = document.getElementById('csv-upload-form');
+    const jsonForm = document.getElementById('json-upload-form');
+    
+    if (type === 'csv') {
+        if (csvForm.classList.contains('show')) {
+            csvForm.classList.remove('show');
+        } else {
+            csvForm.classList.add('show');
+            jsonForm.classList.remove('show');
+        }
+    } else if (type === 'json') {
+        if (jsonForm.classList.contains('show')) {
+            jsonForm.classList.remove('show');
+        } else {
+            jsonForm.classList.add('show');
+            csvForm.classList.remove('show');
+        }
+    }
+}
+</script>
 {% endblock %}
