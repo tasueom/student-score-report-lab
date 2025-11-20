@@ -5,7 +5,7 @@
     <h2>회원가입</h2>
 </main>
 <div>
-    <form method="post" action="{{ url_for('signup') }}">
+    <form method="post" action="{{ url_for('signup') }}" onsubmit="return validateSignupForm()">
         <div>
             <label for="id">학번</label>
             <input type="text" id="id" name="id" required placeholder="학번을 입력하세요">

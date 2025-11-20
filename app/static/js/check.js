@@ -1,10 +1,7 @@
 function validateForm() {
-    const id = document.getElementById('id').value;
     const kor = document.getElementById('kor').value;
     const eng = document.getElementById('eng').value;
     const math = document.getElementById('math').value;
-    const pwd = document.getElementById('pwd').value;
-    const pwd_confirm = document.getElementById('pwd_confirm').value;
     
     // 학번 검증
     if (id === '') {
@@ -37,6 +34,65 @@ function validateForm() {
     // 비밀번호 확인
     if (pwd !== pwd_confirm) {
         alert('비밀번호가 일치하지 않습니다.');
+        return false;
+    }
+    
+    return true;
+}
+
+function validateSignupForm() {
+    const id = document.getElementById('id').value;
+    const pwd = document.getElementById('pwd').value;
+    const pwd_confirm = document.getElementById('pwd_confirm').value;
+    const ban = document.getElementById('ban').value;
+    const name = document.getElementById('name').value;
+    
+    // 학번 검증
+    if (id === '') {
+        alert('학번을 입력해주세요.');
+        return false;
+    }
+    
+    // 비밀번호 검증
+    if (pwd === '') {
+        alert('비밀번호를 입력해주세요.');
+        return false;
+    }
+    
+    // 비밀번호 확인
+    if (pwd !== pwd_confirm) {
+        alert('비밀번호가 일치하지 않습니다.');
+        return false;
+    }
+    
+    // 반 선택 검증
+    if (ban === '') {
+        alert('반을 선택해주세요.');
+        return false;
+    }
+    
+    // 이름 검증
+    if (name === '') {
+        alert('이름을 입력해주세요.');
+        return false;
+    }
+    
+    return true;
+}
+
+function validateSigninForm() {
+    const id = document.getElementById('id').value;
+    const pwd = document.getElementById('pwd').value;
+    
+    // 학번 검증
+    if (id === '') {
+        alert('학번을 입력해주세요.');
+        return false;
+    }
+    
+    // 비밀번호 검증
+    if (pwd === '') {
+        alert('비밀번호를 입력해주세요.');
         return false;
     }
     
