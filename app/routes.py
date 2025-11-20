@@ -74,7 +74,7 @@ def input():
             flash('성적이 성공적으로 저장되었습니다.')
         else:
             flash('성적 저장에 실패했습니다.')
-        return redirect(url_for('index'))
+        return redirect(url_for('view'))
     
     no_score_students = db.get_no_score_students()
     return render_template('input.html', no_score_students=no_score_students)
