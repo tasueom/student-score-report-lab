@@ -25,6 +25,8 @@
             {% if id == 'admin' %}
             <li><a href="{{ url_for('input') }}">성적 입력</a></li>
             <li><a href="{{ url_for('view') }}">성적 조회</a></li>
+            {% else %}
+            <li><a href="{{ url_for('my_score') }}">내 성적 조회</a></li>
             {% endif %}
         </ul>
         <ul id="user-menu">

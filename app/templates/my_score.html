@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}내 성적 조회{% endblock %}
+{% block content %}
+<div class="my-score-container">
+    <main>
+        <h2>내 성적 조회</h2>
+    </main>
+    <div>
+        <table>
+            <tr>
+                <th>국어</th>
+                <td>{{ scores[0] }}</td>
+            </tr>
+            <tr>
+                <th>영어</th>
+                <td>{{ scores[1] }}</td>
+            </tr>
+            <tr>
+                <th>수학</th>
+                <td>{{ scores[2] }}</td>
+            </tr>
+            <tr>
+                <th>총점</th>
+                <td>{{ scores[3] }}</td>
+            </tr>
+            <tr>
+                <th>평균</th>
+                <td>{{ scores[4] }}</td>
+            </tr>
+            <tr>
+                <th>등급</th>
+                <td>{{ scores[5] }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

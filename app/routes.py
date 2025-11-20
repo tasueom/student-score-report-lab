@@ -104,3 +104,11 @@ def export_pdf():
         return redirect(url_for('index'))
     flash("준비중입니다.")
     return redirect(url_for('view'))
+
+@app.route('/my_score')
+def my_score():
+    if session.get('id') == 'admin':
+        flash('일반 학생 전용 페이지입니다.')
+        return redirect(url_for('index'))
+    scores = db.get_score(session.get('id'))
+    return render_template('my_score.html', scores=scores)

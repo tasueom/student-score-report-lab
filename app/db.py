@@ -263,3 +263,16 @@ def get_subject_averages():
             cursor.close()
         if conn:
             conn.close()
+
+def get_score(id):
+    """학생의 성적을 조회하고 리스트를 반환합니다."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT kor, eng, math, total, average, grade FROM {TABLE_NAME} WHERE id = %s", (id,))
+        return cursor.fetchone()
+    except mysql.connector.Error as err:
+        print(f"Score retrieval failed: {err}")
+        return []
