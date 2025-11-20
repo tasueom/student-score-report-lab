@@ -1,4 +1,4 @@
-from app.db import create_database, drop_table, create_table
+from app.db import create_database, drop_table, create_table, insert_admin
 
 if __name__ == '__main__':
     print("데이터베이스 생성 중...")
@@ -19,3 +19,8 @@ if __name__ == '__main__':
     else:
         print("✗ 테이블 생성 실패")
 
+    print("\n관리자 삽입 중...")
+    if insert_admin():
+        print("✓ 관리자 삽입 완료")
+    else:
+        print("✗ 관리자 삽입 실패")
