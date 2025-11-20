@@ -513,7 +513,7 @@ input[readonly]:focus {
 }
 
 /* 메시지 p태그 */
-p {
+.message-p {
     padding: 1rem;
     background-color: #fff3cd;
     border: 1px solid #ffc107;
