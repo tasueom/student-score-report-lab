@@ -107,6 +107,9 @@ def export_pdf():
 
 @app.route('/my_score')
 def my_score():
+    if not session.get('id'):
+        flash('로그인이 필요합니다.')
+        return redirect(url_for('signin'))
     if session.get('id') == 'admin':
         flash('일반 학생 전용 페이지입니다.')
         return redirect(url_for('index'))
