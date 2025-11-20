@@ -22,8 +22,10 @@
     <nav>
         <ul id="menu">
             <li><a href="{{ url_for('index') }}">홈</a></li>
+            {% if id == 'admin' %}
             <li><a href="{{ url_for('input') }}">성적 입력</a></li>
             <li><a href="{{ url_for('view') }}">성적 조회</a></li>
+            {% endif %}
         </ul>
         <ul id="user-menu">
             {% if id %}
