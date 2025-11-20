@@ -35,6 +35,21 @@ def signup():
             return redirect(url_for('signup'))
     return render_template('signup.html')
 
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    if request.method == 'POST':
+        id = request.form['id']
+        pwd = request.form['pwd']
+        student = db.get_student(id)
+        if student and chk_pw(pwd, student[1]):
+            session['id'] = id
+            session['name'] = student[2]
+            return redirect(url_for('index'))
+        else:
+            flash('학번 또는 비밀번호가 일치하지 않습니다.')
+            return redirect(url_for('signin'))
+    return render_template('signin.html')
+
 @app.route('/input', methods=['GET', 'POST'])
 def input():
     if request.method == 'POST':

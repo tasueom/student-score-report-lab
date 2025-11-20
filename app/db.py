@@ -149,6 +149,24 @@ def insert_student(id, pwd_hash, ban, name):
         if conn:
             conn.close()
 
+def get_student(id):
+    """학생을 조회하고 튜플을 반환합니다."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM students WHERE id = %s", (id,))
+        return cursor.fetchone()
+    except mysql.connector.Error as err:
+        print(f"Student retrieval failed: {err}")
+        return None
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 def insert_score(id, kor, eng, math, total, average, grade):
     """성적을 삽입하고 성공 여부를 반환합니다."""
     conn = None

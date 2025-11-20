@@ -27,6 +27,11 @@
         </ul>
         <ul id="user-menu">
             <li><a href="{{ url_for('signup') }}">회원가입</a></li>
+            {% if id %}
+            
+            {% else %}
+            <li><a href="{{ url_for('signin') }}">로그인</a></li>
+            {% endif %}
         </ul>
     </nav>
     {% block content %}{% endblock %}

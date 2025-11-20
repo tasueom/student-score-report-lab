@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}로그인{% endblock %}
+{% block content %}
+<main>
+    <h2>로그인</h2>
+</main>
+<div>
+    <form method="post" action="{{ url_for('signin') }}">
+        <div>
+            <label for="id">학번</label>
+            <input type="text" id="id" name="id" required placeholder="학번을 입력하세요">
+        </div>
+        <div>
+            <label for="pwd">비밀번호</label>
+            <input type="password" id="pwd" name="pwd" required placeholder="비밀번호를 입력하세요">
+        </div>
+        <div>
+            <button type="submit">로그인</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
