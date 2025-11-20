@@ -82,10 +82,16 @@ def input():
         else:
             flash('성적 저장에 실패했습니다.')
         return redirect(url_for('index'))
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
     return render_template('input.html')
 
 @app.route('/view')
 def view():
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
     scores = db.get_scores()
     subject_averages = db.get_subject_averages()
     chart_data = service.format_chart_data(subject_averages)
@@ -93,10 +99,16 @@ def view():
 
 @app.route('/export_excel')
 def export_excel():
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
     flash("준비중입니다.")
     return redirect(url_for('view'))
 
 @app.route('/export_pdf')
 def export_pdf():
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
     flash("준비중입니다.")
     return redirect(url_for('view'))
