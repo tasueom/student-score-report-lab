@@ -75,7 +75,7 @@ def create_table():
         # students 테이블 생성 (먼저 생성해야 외래키 참조 가능)
         cursor.execute("""
             CREATE TABLE students (
-                id TEXT PRIMARY KEY,
+                id VARCHAR(50) PRIMARY KEY,
                 pwd TEXT,
                 ban INT,
                 name VARCHAR(50)
@@ -85,7 +85,7 @@ def create_table():
         # scores 테이블 생성 (students.id를 참조하는 외래키)
         cursor.execute(f"""
             CREATE TABLE {TABLE_NAME} (
-                id TEXT PRIMARY KEY,
+                id VARCHAR(50) PRIMARY KEY,
                 kor INT,
                 eng INT,
                 math INT,
