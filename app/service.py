@@ -11,12 +11,20 @@ import matplotlib.pyplot as plt
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+from dotenv import load_dotenv
 
-# Tesseract 실행 파일 경로, 아래 구문은 항상 나와야함
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# 환경변수 로드
+load_dotenv()
+
+# Tesseract 실행 파일 경로 설정 (환경변수에서 읽어오거나 기본값 사용)
+tesseract_cmd = os.environ.get('TESSERACT_CMD', r"C:\Program Files\Tesseract-OCR\tesseract.exe")
+if tesseract_cmd and os.path.exists(tesseract_cmd):
+    pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
 
 # 한국어 또는 다른 나라 언어팩이 들어있는 위치 지정, tessdata 경로 명시
-os.environ['TESSDATA_PREFIX'] = r"C:\Program Files\Tesseract-OCR\tessdata"
+tessdata_prefix = os.environ.get('TESSDATA_PREFIX', r"C:\Program Files\Tesseract-OCR\tessdata")
+if tessdata_prefix and os.path.exists(tessdata_prefix):
+    os.environ['TESSDATA_PREFIX'] = tessdata_prefix
 
 def calculate(kor, eng, math):
     total = kor + eng + math
