@@ -1,4 +1,4 @@
-# student-score-report-lab
+# 학생 성적 관리 시스템
 
 Flask 기반 학생 성적 관리 웹 애플리케이션으로, MySQL에 데이터를 저장하고 Chart.js로 시각화합니다.
 
