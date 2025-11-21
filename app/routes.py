@@ -158,8 +158,22 @@ def export_pdf():
     if session.get('id') != 'admin':
         flash('관리자만 접근할 수 있습니다.')
         return redirect(url_for('index'))
-    flash("준비중입니다.")
-    return redirect(url_for('view'))
+    
+    # 전체 성적 데이터 조회
+    scores = db.get_scores()
+    
+    # 과목별 평균 조회
+    subject_averages = db.get_subject_averages()
+    
+    # PDF 파일 생성
+    pdf_file = service.export_pdf(scores, subject_averages)
+    
+    return send_file(
+        pdf_file,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name='성적표.pdf'
+    )
 
 @app.route('/upload_csv', methods=['POST'])
 def upload_csv():

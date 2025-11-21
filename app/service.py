@@ -5,6 +5,12 @@ import re
 from io import BytesIO
 import base64
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  # GUI 백엔드 사용 안 함
+import matplotlib.pyplot as plt
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
 
 # Tesseract 실행 파일 경로, 아래 구문은 항상 나와야함
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -112,3 +118,147 @@ def export_excel(scores):
     excel_buffer.seek(0)
     
     return excel_buffer
+
+def create_chart_png(subject_averages):
+    """과목별 평균 점수 차트를 PNG 이미지로 생성하는 함수
+    
+    Args:
+        subject_averages: (국어평균, 영어평균, 수학평균) 튜플
+    
+    Returns:
+        BytesIO: PNG 이미지가 저장된 BytesIO 객체
+    """
+    avg_kor, avg_eng, avg_math = subject_averages
+    
+    # 한글 폰트 설정 (Windows 기본 폰트 사용)
+    plt.rcParams['font.family'] = 'Malgun Gothic'  # 맑은 고딕
+    plt.rcParams['axes.unicode_minus'] = False  # 마이너스 기호 깨짐 방지
+    
+    # 차트 크기 설정
+    plt.figure(figsize=(8, 4))
+    
+    # 데이터 준비
+    subjects = ['국어', '영어', '수학']
+    averages = [avg_kor, avg_eng, avg_math]
+    
+    # 막대 그래프 생성
+    plt.bar(subjects, averages, color=['#3498db', '#e74c3c', '#16a085'])
+    plt.title("과목별 평균 점수", fontsize=14, fontweight='bold')
+    plt.xlabel("과목", fontsize=12)
+    plt.ylabel("평균 점수", fontsize=12)
+    plt.ylim(0, 100)  # Y축 범위 설정
+    plt.grid(axis="y", alpha=0.3)  # Y축 방향으로만 grid 표시
+    
+    # 이미지를 BytesIO에 저장
+    img_buffer = BytesIO()
+    plt.savefig(img_buffer, format='PNG', dpi=150, bbox_inches='tight')
+    plt.close()
+    img_buffer.seek(0)
+    
+    return img_buffer
+
+def export_pdf(scores, subject_averages):
+    """성적 데이터와 차트를 포함한 PDF 파일을 생성하는 함수
+    
+    Args:
+        scores: 성적 데이터 리스트 [(학번, 반, 이름, 국어, 영어, 수학, 총점, 평균, 등급), ...]
+        subject_averages: (국어평균, 영어평균, 수학평균) 튜플
+    
+    Returns:
+        BytesIO: PDF 파일이 저장된 BytesIO 객체
+    """
+    # PDF 파일을 BytesIO에 저장
+    pdf_buffer = BytesIO()
+    c = canvas.Canvas(pdf_buffer, pagesize=A4)
+    width, height = A4
+    
+    # 한글 폰트 설정
+    # reportlab은 기본적으로 한글을 지원하지 않으므로 TTF 폰트를 등록해야 함
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    
+    font_name = 'Helvetica'  # 기본값
+    # Windows에서 맑은 고딕 폰트 경로 시도
+    possible_font_paths = [
+        r"C:\Windows\Fonts\malgun.ttf",  # 맑은 고딕
+        r"C:\Windows\Fonts\gulim.ttc",   # 굴림
+        r"C:\Windows\Fonts\batang.ttc",  # 바탕
+    ]
+    
+    for font_path in possible_font_paths:
+        if os.path.exists(font_path):
+            try:
+                pdfmetrics.registerFont(TTFont('Korean', font_path))
+                font_name = 'Korean'
+                break
+            except:
+                continue
+    
+    # 1페이지 - 차트 삽입
+    c.setFont(font_name, 16)
+    c.drawString(50, height - 50, "과목별 평균 점수 차트")
+    
+    # 차트 이미지 생성 및 삽입
+    chart_buffer = create_chart_png(subject_averages)
+    # BytesIO를 임시 파일로 저장하여 reportlab에 전달
+    import tempfile
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp_file:
+        chart_buffer.seek(0)
+        tmp_file.write(chart_buffer.read())
+        tmp_file_path = tmp_file.name
+    
+    try:
+        c.drawImage(tmp_file_path, 50, height - 350, width=500, height=250)
+    finally:
+        # 임시 파일 삭제
+        try:
+            os.unlink(tmp_file_path)
+        except:
+            pass
+    c.showPage()  # 다음 페이지로 이동
+    
+    # 2페이지 - 성적표 출력
+    x = 40  # 표의 시작 X 위치
+    y = height - 50  # 표의 시작 Y 위치
+    
+    # 표 제목
+    c.setFont(font_name, 16)
+    c.drawString(x, y, "성적표")
+    y -= 40  # 줄 내림
+    
+    # 표 헤더 출력
+    headers = ["학번", "반", "이름", "국어", "영어", "수학", "총점", "평균", "등급"]
+    c.setFont(font_name, 10)
+    col_widths = [60, 40, 60, 50, 50, 50, 50, 50, 40]  # 각 열의 너비
+    x_positions = [x]
+    for i in range(len(col_widths) - 1):
+        x_positions.append(x_positions[-1] + col_widths[i])
+    
+    for i, h in enumerate(headers):
+        c.drawString(x_positions[i], y, str(h))
+    y -= 20  # 헤더 아래로 한 줄 내림
+    
+    # 표 데이터 출력
+    c.setFont(font_name, 8)
+    for row in scores:
+        # 페이지 아래에 공간이 부족하면 페이지 넘김
+        if y < 60:
+            c.showPage()
+            y = height - 50
+            c.setFont(font_name, 8)
+        
+        # 한 행 출력
+        for i, value in enumerate(row):
+            # 숫자는 소수점 둘째 자리까지 표시 (평균)
+            if isinstance(value, float):
+                value_str = f"{value:.2f}"
+            else:
+                value_str = str(value)
+            c.drawString(x_positions[i], y, value_str)
+        y -= 15  # 다음 줄로 이동
+    
+    # PDF 저장
+    c.save()
+    pdf_buffer.seek(0)
+    
+    return pdf_buffer
