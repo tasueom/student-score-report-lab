@@ -109,7 +109,9 @@ pip install -r requirements.txt
 
 **주의사항**: OCR 기능을 사용하려면 Tesseract OCR을 별도로 설치해야 합니다.
 - Windows: [Tesseract OCR 설치](https://github.com/UB-Mannheim/tesseract/wiki)
-- 설치 후 `app/service.py`의 Tesseract 경로를 확인하세요.
+- Linux: `sudo apt-get install tesseract-ocr tesseract-ocr-kor` (Ubuntu/Debian)
+- Mac: `brew install tesseract tesseract-lang`
+- 설치 후 기본 경로가 아닌 경우 `.env` 파일에 경로를 설정하세요.
 
 ### 4. 환경 변수 설정
 
@@ -124,7 +126,25 @@ DB_NAME=scoredb
 
 # Flask Configuration
 SECRET_KEY=your-secret-key-here
+
+# Tesseract OCR Configuration (선택사항)
+# Windows에서 기본 경로가 아닌 경우에만 설정하세요
+# TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
+# TESSDATA_PREFIX=C:\Program Files\Tesseract-OCR\tessdata
+# 
+# Linux/Mac의 경우 보통 시스템 PATH에 있으므로 설정 불필요
+# TESSERACT_CMD=/usr/bin/tesseract
+# TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
 ```
+
+**환경변수 설명:**
+- `TESSERACT_CMD`: Tesseract 실행 파일 경로 (선택사항)
+  - Windows 기본값: `C:\Program Files\Tesseract-OCR\tesseract.exe`
+  - Linux/Mac: 보통 시스템 PATH에 있어서 설정 불필요
+- `TESSDATA_PREFIX`: Tessdata 언어팩 경로 (선택사항)
+  - Windows 기본값: `C:\Program Files\Tesseract-OCR\tessdata`
+  - Linux/Mac: 보통 시스템 기본 경로 사용
+- **참고**: 기본 경로에 Tesseract가 설치되어 있다면 이 설정들을 생략해도 됩니다.
 
 ### 5. 데이터베이스 초기화
 
@@ -444,9 +464,10 @@ id,kor,eng,math
 ## 문제 해결
 
 ### Tesseract OCR 오류
-- Windows에서 OCR 기능 사용 시 Tesseract 설치 필요
-- `app/service.py`의 Tesseract 경로 확인
-- 기본 경로: `C:\Program Files\Tesseract-OCR\tesseract.exe`
+- OCR 기능 사용 시 Tesseract 설치 필요
+- Windows 기본 경로: `C:\Program Files\Tesseract-OCR\tesseract.exe`
+- 기본 경로가 아닌 경우 `.env` 파일에 `TESSERACT_CMD`와 `TESSDATA_PREFIX` 설정
+- Linux/Mac은 보통 시스템 PATH에 있어서 별도 설정 불필요
 
 ### 한글 폰트 문제 (PDF)
 - PDF 생성 시 한글이 깨질 경우:
