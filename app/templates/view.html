@@ -27,6 +27,7 @@
                         <th>평균</th>
                         <th>등급</th>
                         <th>수정</th>
+                        <th>삭제</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +43,7 @@
                         <td>{{ score[7] }}</td>
                         <td>{{ score[8] }}</td>
                         <td><a href="{{ url_for('edit', id=score[0]) }}" class="btn-edit">수정</a></td>
+                        <td><a href="{{ url_for('delete', id=score[0]) }}" class="btn-delete" onclick="return confirm('삭제하시겠습니까?')">삭제</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -193,6 +193,27 @@ def update_score(id, kor, eng, math, total, average, grade):
         if conn:
             conn.close()
 
+def delete_score(id):
+    """성적을 삭제하고 성공 여부를 반환합니다."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(f"DELETE FROM {TABLE_NAME} WHERE id = %s", (id,))
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"Score deletion failed: {err}")
+        if conn:
+            conn.rollback()
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+    return True
+
 def get_student(id):
     """학생을 조회하고 튜플을 반환합니다. (id, pwd, ban, name)"""
     conn = None

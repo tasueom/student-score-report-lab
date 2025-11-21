@@ -113,6 +113,17 @@ def edit(id):
     score = db.get_score(id)
     return render_template('edit.html', score=score, id=id)
 
+@app.route('/delete/<id>')
+def delete(id):
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
+    if db.delete_score(id):
+        flash('삭제되었습니다.')
+    else:
+        flash('삭제에 실패했습니다.')
+    return redirect(url_for('view'))
+
 @app.route('/export_excel')
 def export_excel():
     if session.get('id') != 'admin':
