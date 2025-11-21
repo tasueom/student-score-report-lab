@@ -10,6 +10,9 @@
         <button type="button" class="btn-upload btn-json" onclick="toggleUpload('json')" title="JSON 업로드">
             <i class="fas fa-code"></i>
         </button>
+        <button type="button" class="btn-upload btn-img" onclick="toggleUpload('img')" title="이미지 업로드">
+            <i class="fas fa-image"></i>
+        </button>
     </div>
 </main>
 <div>
@@ -34,6 +37,18 @@
         <div>
             <button type="submit">업로드</button>
             <button type="button" class="btn-cancel" onclick="toggleUpload('json')">취소</button>
+        </div>
+    </form>
+
+    <!-- 이미지 업로드 폼 -->
+    <form id="img-upload-form" class="upload-form" method="post" action="{{ url_for('upload_img') }}" enctype="multipart/form-data">
+        <div>
+            <label for="img-file">이미지 파일로 업로드</label>
+            <input type="file" id="img-file" name="file" accept=".jpg,.jpeg,.png" required>
+        </div>
+        <div>
+            <button type="submit">업로드</button>
+            <button type="button" class="btn-cancel" onclick="toggleUpload('img')">취소</button>
         </div>
     </form>
 
@@ -72,6 +87,7 @@
 function toggleUpload(type) {
     const csvForm = document.getElementById('csv-upload-form');
     const jsonForm = document.getElementById('json-upload-form');
+    const imgForm = document.getElementById('img-upload-form');
     
     if (type === 'csv') {
         if (csvForm.classList.contains('show')) {
@@ -79,6 +95,7 @@ function toggleUpload(type) {
         } else {
             csvForm.classList.add('show');
             jsonForm.classList.remove('show');
+            imgForm.classList.remove('show');
         }
     } else if (type === 'json') {
         if (jsonForm.classList.contains('show')) {
@@ -86,6 +103,15 @@ function toggleUpload(type) {
         } else {
             jsonForm.classList.add('show');
             csvForm.classList.remove('show');
+            imgForm.classList.remove('show');
+        }
+    } else if (type === 'img') {
+        if (imgForm.classList.contains('show')) {
+            imgForm.classList.remove('show');
+        } else {
+            imgForm.classList.add('show');
+            csvForm.classList.remove('show');
+            jsonForm.classList.remove('show');
         }
     }
 }

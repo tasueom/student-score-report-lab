@@ -197,6 +197,11 @@ def upload_json():
         flash(f'{success_count}명의 성적이 성공적으로 업로드되었습니다.')
     return redirect(url_for('input'))
 
+@app.route('/upload_img', methods=['POST'])
+def upload_img():
+    # 라우트 함수는 사용자가 구현할 예정
+    pass
+
 @app.route('/my_score')
 def my_score():
     if not session.get('id'):

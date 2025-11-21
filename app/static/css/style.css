@@ -282,6 +282,17 @@ main h2 {
     box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
 }
 
+.btn-img {
+    background-color: #9b59b6;
+    color: white;
+}
+
+.btn-img:hover {
+    background-color: #8e44ad;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+}
+
 /* View 페이지 컨테이너 (양옆 배치) */
 .view-container {
     max-width: 1200px;
