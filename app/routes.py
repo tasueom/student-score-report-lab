@@ -199,8 +199,14 @@ def upload_json():
 
 @app.route('/upload_img', methods=['POST'])
 def upload_img():
-    # 라우트 함수는 사용자가 구현할 예정
-    pass
+    if session.get('id') != 'admin':
+        flash('관리자만 접근할 수 있습니다.')
+        return redirect(url_for('index'))
+    file = request.files['file']
+    result = service.extract_info(file)
+    no_score_students = db.get_no_score_students()
+    
+    return render_template('input.html', extracted_result=result, no_score_students=no_score_students)
 
 @app.route('/my_score')
 def my_score():

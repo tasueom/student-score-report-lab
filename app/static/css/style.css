@@ -587,6 +587,36 @@ input[readonly]:focus {
     margin-right: auto;
 }
 
+/* 이미지 추출 폼 컨테이너 */
+.extracted-form-container {
+    display: flex;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+.extracted-form {
+    flex: 1;
+    margin: 0;
+}
+
+.extracted-image {
+    flex: 1;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.extracted-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    max-height: 500px;
+    object-fit: contain;
+}
+
 /* 반응형: 작은 화면에서는 세로 배치 */
 @media (max-width: 768px) {
     .view-container {

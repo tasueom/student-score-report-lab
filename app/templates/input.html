@@ -52,7 +52,35 @@
         </div>
     </form>
 
-    {% if no_score_students %}
+    <!-- 이미지에서 추출된 정보 입력 폼 -->
+    {% if extracted_result %}
+    <div class="extracted-form-container">
+        <form method="post" action="{{ url_for('input') }}" onsubmit="return validateForm()" class="extracted-form">
+            <div>
+                <label for="extracted-id">학번</label>
+                <input type="text" id="extracted-id" name="id" value="{{ extracted_result[0] }}" required>
+            </div>
+            <div>
+                <label for="extracted-kor">국어</label>
+                <input type="number" id="extracted-kor" name="kor" value="{{ extracted_result[1] }}" required>
+            </div>
+            <div>
+                <label for="extracted-eng">영어</label>
+                <input type="number" id="extracted-eng" name="eng" value="{{ extracted_result[2] }}" required>
+            </div>
+            <div>
+                <label for="extracted-math">수학</label>
+                <input type="number" id="extracted-math" name="math" value="{{ extracted_result[3] }}" required>
+            </div>
+            <div>
+                <button type="submit">입력</button>
+            </div>
+        </form>
+        <div class="extracted-image">
+            <img src="data:image/png;base64,{{ extracted_result[4] }}" alt="업로드한 이미지">
+        </div>
+    </div>
+    {% elif no_score_students %}
     <form method="post" action="{{ url_for('input') }}" onsubmit="return validateForm()">
         <div>
             <label for="id">학번</label>
